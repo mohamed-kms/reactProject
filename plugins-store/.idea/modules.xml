@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/resto-with-react.iml" filepath="$PROJECT_DIR$/.idea/resto-with-react.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/plugins-store.iml" filepath="$PROJECT_DIR$/.idea/plugins-store.iml" />
     </modules>
   </component>
 </project>
