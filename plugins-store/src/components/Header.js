@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 function Header() {
     return (
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+        <nav className="navbar navbar-expand-lg navbar-dark" style={{backgroundColor: '#000000'}}>
             {/*<a className="navbar-brand">
                 * <img src={logo} width="30" height="30" className="d-inline-block align-top" alt=""/> *
                 PluginStore
