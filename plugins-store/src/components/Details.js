@@ -9,7 +9,16 @@ class Details extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            id: ''
+            id: '',
+            myPlugin: {
+                name: null,
+                link: null,
+                title: null,
+                picture: null,
+                resume: null,
+                arrayTags: null,
+                arrayConfig: null
+            }
         }
     }
 
@@ -22,7 +31,21 @@ class Details extends Component {
             .get()
             .then((doc) => {
                 if (doc.exists) {
-                    console.log("[]" + doc.id + " " + JSON.stringify(doc.data()));
+                    console.log("[PLUGIN]:" + doc.id + " " + JSON.stringify(doc.data()));
+                    /*for (var n in doc.data()) {
+                        console.log("[PLUGIN]:" + n + " ------ " + doc.data()[n]);
+                    }*/
+                    this.setState({
+                        myPlugin: {
+                            ...this.state.myPlugin,
+                            name: doc.data()["creator"],
+                            link: doc.data()["url"],
+                            picture: doc.data()["image"],
+                            resume: doc.data()["description"],
+                            arrayTags: doc.data()["tags"],
+                            arrayConfig: null
+                        }
+                    });
                 } else {
                     console.log("No such document!");
                 }
@@ -46,8 +69,17 @@ class Details extends Component {
 
     render() {
         return (
-            <div>
-                <p>ToDo : new Query with this id : {this.state.id}</p>
+            <div className="container">
+                <div className="row justify-content-md-center">
+                    <div className="">
+                        <div className="card shadow p-3 mb-5 rounded">
+                            <div className="card-body">
+                                <h5 className="card-title">{this.state.myPlugin.name}</h5>
+                                <p>{this.state.myPlugin.resume}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }
