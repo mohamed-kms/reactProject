@@ -68,29 +68,62 @@ class HomeStore extends Component {
 
     getPlugins() {
         console.log("--- GETTING DATA ---");
-        var db = firebase.firestore();
-        db.settings({
-            timestampsInSnapshots: true
-        });
-        db.collection("plugins").get().then((querySnapshot) => {
-            let newPlugins = [];
-            querySnapshot.forEach((doc) => {
-                console.log("=====+>"+doc.id+" "+JSON.stringify(doc.data()));
-                console.log("=====+>"+doc.id+" ++++ "+doc.data().creator);
-                for (var n in doc.data()) {
-                    console.log("*******>"+n+" ");
-                }
-                newPlugins.push({
-                    "id" : doc.id,
-                    "name" : doc.data().creator,
-                    "description" : doc.data().description,
-                    "img" : doc.data().url,
-                });
-            });
-            this.setState({
-                pluginList: newPlugins
-            });
-            console.log("=====+>"+querySnapshot.docs.length+" ");
+        var db = firebase.database();
+        // db.settings({
+        //     timestampsInSnapshots: true
+        // });
+        db.ref("createurs").once('value').then((snapshot) => {
+                    let newPlugins = [];
+
+            snapshot.forEach((childSnapshot) => {
+                childSnapshot.forEach((listPlugin) => {
+                    listPlugin.forEach((plug) => {
+                        var description = plug.child("description").val();
+                        var nom = plug.child("nom").val();
+                        var image = plug.child("image").val();
+                        console.log(nom)
+                        newPlugins.push({
+                                        "id" : plug,
+                                        "name" : nom,
+                                        "description" : description,
+                                        "img" : image,
+                                    });
+                    
+                    })
+                    this.setState({
+                                pluginList: newPlugins
+                            });
+                    
+                    var description = listPlugin.child(listPlugin.key).val();
+                    console.log(listPlugin.hasChild("bigMuff"))
+                    console.log(listPlugin.val())    
+                })
+                //var description = childSnapshot.child("plugins").val().child("description").val();
+
+                //console.log(description);
+            })// var createurs = snapshot.val();
+            // for(var creator in createurs){
+            //     console.log(creator.child("plugins"))
+            // }
+        // })   .collection("plugins").get().then((querySnapshot) => {
+        //     let newPlugins = [];
+        //     querySnapshot.forEach((doc) => {
+        //         console.log("=====+>"+doc.id+" "+JSON.stringify(doc.data()));
+        //         console.log("=====+>"+doc.id+" ++++ "+doc.data().creator);
+        //         for (var n in doc.data()) {
+        //             console.log("*******>"+n+" ");
+        //         }
+        //         newPlugins.push({
+        //             "id" : doc.id,
+        //             "name" : doc.data().creator,
+        //             "description" : doc.data().description,
+        //             "img" : doc.data().url,
+        //         });
+        //     });
+        //     this.setState({
+        //         pluginList: newPlugins
+        //     });
+      //console.log("=====+>"+querySnapshot.docs.length+" ");
         })
     }
 
