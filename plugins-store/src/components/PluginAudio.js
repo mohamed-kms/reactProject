@@ -1,14 +1,23 @@
 import React, { } from 'react';
+import { Route } from 'react-router-dom';
 import logo from "../logo.svg";
 
 function PluginAudio(props) {
     return (
-        <div className="card">
-            <div className="card-body border border-secondary bg-light rounded">
-                <h5>{props.name}</h5>
+        <div className="card text-center shadow p-3 mb-5 rounded" style={{ backgroundColor: '#444444' }}>
+            <div className="card-body">
+                <h3 className="font-weight-bold text-white">{props.name}</h3>
                 <img src={logo} width="70" height="70" alt=""/>
-                <p>{props.description}</p>
-                <button className="btn btn-primary" onClick={() => props.showDetailPlugin(props.id)}>Details</button>
+                <p className="text-white">{props.description}</p>
+                <Route
+                    render={({ history }) => (
+                        <button
+                            type="button"
+                            className="btn btn-outline-danger"
+                            onClick={() => { history.push("/detail?id="+props.id) }/*props.showDetailPlugin(props.id)*/}
+                        >Details</button>
+                    )}
+                />
             </div>
         </div>
     );
