@@ -78,14 +78,14 @@ class HomeStore extends Component {
             snapshot.forEach((childSnapshot) => {
                 childSnapshot.forEach((listPlugin) => {
                     listPlugin.forEach((plug) => {
-                        var description = plug.child("description").val();
+                        var inspiredby = plug.child("inspiredby").val();
                         var nom = plug.child("nom").val();
                         var image = plug.child("image").val();
-                        console.log(nom)
+                        console.log("L'url de l'image est" + image)
                         newPlugins.push({
                                         "id" : plug,
                                         "name" : nom,
-                                        "description" : description,
+                                        "description" : inspiredby,
                                         "img" : image,
                                     });
                     
@@ -94,9 +94,9 @@ class HomeStore extends Component {
                                 pluginList: newPlugins
                             });
                     
-                    var description = listPlugin.child(listPlugin.key).val();
-                    console.log(listPlugin.hasChild("bigMuff"))
-                    console.log(listPlugin.val())    
+                    // var description = listPlugin.child(listPlugin.key).val();
+                    // console.log(listPlugin.hasChild("bigMuff"))
+                    // console.log(listPlugin.val())    
                 })
                 //var description = childSnapshot.child("plugins").val().child("description").val();
 
@@ -134,9 +134,12 @@ class HomeStore extends Component {
     render() {
 
         let listPlugin = this.state.pluginList.map((el, index) => {
+            console.log(el.img , " ", el.image)
+            debugger;
             return <PluginAudio
                 id={el.id}
                 name={el.name}
+                img={el.img}
                 description={el.description}
                 key={index}
                 showDetailPlugin={this.onClickShowDetailPlugin.bind(this)}
