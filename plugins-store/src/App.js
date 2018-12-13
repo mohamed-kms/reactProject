@@ -3,39 +3,28 @@ import React, { Component } from 'react';
 // import logo from './logo.svg';
 import './App.css';
 import Header from "./components/Header";
+import Header2 from "./components/Header2";
 import Main from "./components/Main";
+import firebase from 'firebase';
 
 // import PluginAudio from './components/PluginAudio';
 
 
 class App extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            pluginList: []
-        };
-    }
-
-    onClickDetail(id) {
-        console.log("[DETAILS]");
-    }
 
     render() {
-        console.log("[RENDER]");
-        // let listPlugin = this.state.pluginList.map((el, index) => {
-        //     return <PluginAudio
-        //         id={el.id}
-        //         name={el.name}
-        //         description={el.description}
-        //         key={index}
-        //         details={this.onClickDetail.bind(this)}
-        //     />
-        // });
+        let showHeader;
+
+        const user = firebase.auth().currentUser;
+        if (user) {
+            showHeader = <Header/>
+        } else {
+            showHeader = <Header2/>
+        }
 
         return (
             <div className="">
-                <Header/>
+                {showHeader}
                 <Main/>
             </div>
         );
