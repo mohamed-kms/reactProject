@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 //import fireBase from './../../fireBase';
 import firebase from 'firebase';
-import userUpload from './../upload/AddPlugin';
 
 class Register extends Component {
     constructor(props) {
@@ -37,7 +36,6 @@ class Register extends Component {
                 //console.log("[USER] "+JSON.stringify(user, null, 2));
                 console.log("[ REDIRECTION 1 = ]"+user);
                 // this.props.history.push('/');
-
             })
             .catch(function (error) {
                 // Handle Errors here.
@@ -55,7 +53,7 @@ class Register extends Component {
         console.log("Account " + item + " Created");
     }
 
-    updateFormName(event) {
+    updateFormUsername(event) {
         const username = event.target.value;
         this.setState(prevState => ({
             newAccount: {
@@ -97,7 +95,7 @@ class Register extends Component {
                             <label htmlFor="ieInputUsername">Username</label>
                             <input type="text" className="form-control" id="ieInputUsername"
                                    value={this.state.newAccount.username}
-                                   onChange={this.updateFormName.bind(this)} required
+                                   onChange={this.updateFormUsername.bind(this)} required
                                    placeholder="Entrer un username"/>
                         </div>
                         <div className="form-group">

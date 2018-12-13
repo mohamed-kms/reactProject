@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
 import firebase from "firebase";
-
-import queryString from 'query-string'
 
 class Details extends Component {
 
@@ -44,8 +41,6 @@ class Details extends Component {
                                     arrayConfig: null
                                 }
                             });
-                        } else {
-                            console.log("No such document!");
                         }
                     })
                 })
@@ -56,11 +51,9 @@ class Details extends Component {
     }
 
     componentDidMount() {
-        const values = queryString.parse(this.props.location.search);
         const search = this.props.location.search;
         const params = new URLSearchParams(search);
         const id_ = params.get('id');
-        console.log("[DETAILS]:"+id_);
         this.setState({
             id: id_
         });

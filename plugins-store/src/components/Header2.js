@@ -1,9 +1,8 @@
 import React, { } from 'react';
 import { Link } from 'react-router-dom';
-import firebase from 'firebase';
 // import logo from './logo.svg';
 
-function Header() {
+function Header2() {
     return (
         <nav className="navbar navbar-expand-lg navbar-dark" style={{backgroundColor: '#000000'}}>
             {/*<a className="navbar-brand">
@@ -20,16 +19,10 @@ function Header() {
                         <Link className = "nav-link" to = '/'>Plugins</Link>
                     </li>
                     <li className="nav-item">
-                        <Link className = "nav-link" to = '/add'>Add</Link>
+                        <Link className = "nav-link" to = '/login'>Login</Link>
                     </li>
                     <li className="nav-item">
-                        <Link className = "nav-link" to = '/' onClick={() => {
-                            firebase.auth().signOut().then(() => {
-                                console.log("[Logged out!]");
-                            }, (error) => {
-                                console.log("[error]: ", error);
-                            })
-                        }}>Logout</Link>
+                        <Link className = "nav-link" to = '/register'>Register</Link>
                     </li>
                 </ul>
             </div>
@@ -37,4 +30,4 @@ function Header() {
     );
 }
 
-export default Header;
+export default Header2;

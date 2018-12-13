@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import firebase from 'firebase';
 
 class Login extends Component {
 
@@ -25,7 +26,13 @@ class Login extends Component {
             password: this.state.account.password
         };
         console.log("Account " + JSON.stringify(form) + " Created");
-        debugger;
+        firebase.auth().signInWithEmailAndPassword(form.username, form.password)
+            .then((user) => {
+                // TODO redirection
+            })
+            .catch((error) => {
+                console.log("[error]: ", error);
+            });
     }
 
     updateFormName(event) {
@@ -53,7 +60,7 @@ class Login extends Component {
             <div className="row align-self-center">
                 <div className="col d-none d-sm-none d-md-none"/>
                 <div className="col justify-content-center">
-                    <form onSubmit={this.loginAccount}>
+                    <form className="px-5 my-5" onSubmit={this.loginAccount}>
                         <div className="form-group">
                             <label htmlFor="ieInputUsername">Username</label>
                             <input type="text" className="form-control" id="ieInputUsername"
