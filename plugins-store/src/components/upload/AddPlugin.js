@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import firebase from 'firebase';
 import SettingPlugin from '../SettingPlugin'
-import {storage} from 'firebase';
 
 class AddPlugin extends Component {
 
@@ -9,6 +8,7 @@ class AddPlugin extends Component {
         super(props);
         this.state = {
             id_: '',
+            username: '',
             nom: '',
             url: '',
             tag: '',
@@ -23,39 +23,6 @@ class AddPlugin extends Component {
         };
 
         this.formulairePostPlugin = this.formulairePostPlugin.bind(this);
-
-        this.handleChange = this.handleChange.bind(this);
-
-        this.handleUpload = this.handleUpload.bind(this);
-    }
-
-    handleUpload = () => {
-        const {image} = this.state;
-        console.log(image);
-        const uploadTask = firebase.storage().ref(`plugins/${image.name}`).put(image);
-        uploadTask.on('state_changed', 
-        (snapshot) => {
-            // Progress function ...
-        }, (error) => {
-            // Error function ...
-            console.log(error);
-        }, () => {
-            // Completed function ....
-            firebase.storage().ref('plugins').child(image.name).getDownloadURL().then((url) => {
-                console.log(url);
-                // this.setState({
-                //     image: url
-                // });
-            });
-        });
-    }
-
-    handleChange = e => {
-        if(e.target.files[0]){
-            const image = e.target.files[0];
-            this.setState(() => ({image}));
-            console.log(image);
-        }
     }
 
     /**
@@ -97,6 +64,11 @@ class AddPlugin extends Component {
         console.log("[Resume]: ", event.target.value);
         this.setState({
             description: event.target.value
+        });
+    }
+    handleImg(event) {
+        this.setState({
+            image: event.target.files[0]
         });
     }
     /**
@@ -146,32 +118,56 @@ class AddPlugin extends Component {
         const tagString = this.state.tag;
         const tagList = tagString.split(';');
 
-        let form = {
-            nom: this.state.nom,
-            tags: tagList,
-            image: this.state.image,
-            inspiredby: "",
-            description: this.state.description,
-            configs: this.state.configs
-        };
+        const storage = firebase.storage();
+        const pictureRef = storage.ref("plugins/"+this.state.image.name);
+
+        var file = this.state.image;
+
+        const database = firebase.database();
+        const ref = database.ref("plugins");
+
+        /*pictureRef.getDownloadURL().then((url) => {
+            this.state.image = url;
+        });*/
 
         if (this.state.configs.length < 1) {
             return;
         }
 
+        pictureRef.put(file).then((snapshot) => {
+            snapshot.ref.getDownloadURL().then((url) => {
+                console.log("aaaaaaaaaaaaaaaaa: ", url);
+                let form = {
+                    username: firebase.auth().currentUser.email.split('@')[0],
+                    nom: this.state.nom,
+                    tags: tagList,
+                    image: url,
+                    inspiredby: "",
+                    description: this.state.description,
+                    configs: this.state.configs,
+                    url: this.state.url
+                };
+                ref.push().set(form, (error) => {
+                    if (error) {
+                        console.log("BAD");
+                    } else {
+                        console.log("GOOOD");
+                    }
+                })
+            });
+        });
 
-        /*const storage = firebase.storage();
-        const pictureRef = storage.ref("plugins");*/
 
-        const database = firebase.database();
-        const ref = database.ref("createurs").child(firebase.auth().currentUser.email.split('@')[0]).child("plugins");
-        /*child(this.state.nom)*/ref.push().set(form, (error) => {
+        /*child(this.state.nom)*ref.push().set(form, (error) => {
             if (error) {
                 console.log("BAD");
             } else {
+                pictureRef.put(file).then((snapshot) => {
+                    console.log('Uploaded a blob or file!', pictureRef.getDownloadURL());
+                });
                 console.log("GOOOD");
             }
-        });
+        });*/
     };
 
     addConfig = (event)=> {
@@ -284,9 +280,14 @@ class AddPlugin extends Component {
                             </div>
                             <div className="form-group">
                                 <div className="custom-file">
-                                    <input type="file" className="custom-file-input" id="validatedCustomFile" required onChange={this.handleChange}/>
+                                    <input
+                                        type="file"
+                                        className="custom-file-input"
+                                        id="validatedCustomFile"
+                                        required
+                                        onChange={(event) => this.handleImg(event)}
+                                    />
                                     <label className="custom-file-label" htmlFor="validatedCustomFile">Choisir l'image du plugin...</label>
-                                    <button>Upload</button>
                                     <div className="invalid-feedback">Example invalid custom file feedback</div>
                                 </div>
                             </div>
@@ -354,14 +355,14 @@ class AddPlugin extends Component {
                                     </tbody>
                                 </table>
                             </div>
-                            <button onClick={this.handleUpload} type="submit" className="btn btn-dark">Add plugin</button>
+                            <button type="submit" className="btn btn-dark">Add plugin</button>
                         </form>
                     </div>
                 </div>
             );
         } else {
             return (
-                <div>Connectez-vous !</div>
+                <div>connecté vous !</div>
             )
         }
     }

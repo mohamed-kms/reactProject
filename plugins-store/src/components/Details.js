@@ -9,6 +9,7 @@ class Details extends Component {
         this.state = {
             id: '',
             myPlugin: {
+                username: null,
                 name: null,
                 link: null,
                 title: null,
@@ -23,41 +24,35 @@ class Details extends Component {
 
     getMoreInfo(idPlugin) {
         var db = firebase.database();
-        db.ref("createurs").once('value').then((snapshot) => {
-//            console.log("[PARENT]", snapshot.val())
-            snapshot.forEach((childSnapshot) => {
-                var child = db.ref("createurs").child(childSnapshot.key).child("plugins").once("value")
-//                console.log("[CHILD]", child);
-                child.then((snapshot2) => {
-                    snapshot2.forEach((childSnapshot2) => {
-                        if (childSnapshot2.key === idPlugin) {
-                            console.log("[]----_>", childSnapshot2.val());
-                            let listConfig = [];
-                            if (childSnapshot2.val()["configs"]) {
-                                childSnapshot2.val()["configs"].forEach((elt) => {
-                                    listConfig.push({
-                                        "control": elt.control,
-                                        "default": elt.default,
-                                        "min": elt.min,
-                                        "max": elt.max
-                                    })
-                                });
-                            }
-                            this.setState({
-                                myPlugin: {
-                                    ...this.state.myPlugin,
-                                    name: childSnapshot2.val()["nom"],
-                                    link: childSnapshot2.val()["url"],
-                                    picture: childSnapshot2.val()["image"],
-                                    resume: childSnapshot2.val()["description"],
-                                    arrayTags: childSnapshot2.val()["tags"],
-                                    arrayConfig: null,
-                                    configs: listConfig
-                                }
-                            });
+        db.ref("plugins").once('value').then((snapshot) => {
+            snapshot.forEach((snapshot2) => {
+                if (snapshot2.key === idPlugin) {
+                    console.log("-------->: ", snapshot2.val());
+                    let listConfig = [];
+                    if (snapshot2.val()["configs"]) {
+                        snapshot2.val()["configs"].forEach((elt) => {
+                            listConfig.push({
+                                "control": elt.control,
+                                "default": elt.default,
+                                "min": elt.min,
+                                "max": elt.max
+                            })
+                        });
+                    }
+                    this.setState({
+                        myPlugin: {
+                            ...this.state.myPlugin,
+                            username: snapshot2.val()["username"],
+                            name: snapshot2.val()["nom"],
+                            link: snapshot2.val()["url"],
+                            picture: snapshot2.val()["image"],
+                            resume: snapshot2.val()["description"],
+                            arrayTags: snapshot2.val()["tags"],
+                            arrayConfig: null,
+                            configs: listConfig
                         }
-                    })
-                })
+                    });
+                }
             })
         }).catch((error) => {
             console.log("Error getting document:", error);
@@ -92,6 +87,7 @@ class Details extends Component {
                     <div className="">
                         <div className="card shadow p-3 mb-5 rounded">
                             <div className="card-body">
+                                <p>{this.state.myPlugin.username}</p>
                                 <p>{this.state.myPlugin.link}</p>
                                 <h5 className="card-title">{this.state.myPlugin.name}</h5>
                                 <div className="text-center">

@@ -31,28 +31,22 @@ class HomeStore extends Component {
 
     getPlugins() {
         var db = firebase.database();
-        db.ref("createurs").once('value').then((snapshot) => {
+        db.ref("plugins").once('value').then((snapshot) => {
             let newPlugins = [];
 
             snapshot.forEach((childSnapshot) => {
-                childSnapshot.forEach((listPlugin) => {
-                    listPlugin.forEach((plug) => {
-                        var inspiredby = plug.child("inspiredby").val();
-                        var nom = plug.child("nom").val();
-                        var image = plug.child("image").val();
-                        newPlugins.push({
-                            "id" : plug,
-                            "name" : nom,
-                            "description" : inspiredby,
-                            "img" : image,
-                        });
-                    });
-                    this.setState({
-                        pluginList: newPlugins
-                    });
-
-                })
-
+                var inspiredby = childSnapshot.child("inspiredby").val();
+                var nom = childSnapshot.child("nom").val();
+                var image = childSnapshot.child("image").val();
+                newPlugins.push({
+                    "id" : childSnapshot,
+                    "name" : nom,
+                    "description" : inspiredby,
+                    "img" : image,
+                });
+                this.setState({
+                    pluginList: newPlugins
+                });
             })
         })
     }

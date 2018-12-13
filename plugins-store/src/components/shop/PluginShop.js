@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 
 import firebase from 'firebase';
-import PluginAudio from "../PluginAudio";
+import PluginAudio2 from "../PluginAudio2";
 
 class PluginShop extends Component {
 
@@ -40,33 +40,29 @@ class PluginShop extends Component {
 
     searchPlugin = _.debounce (
         function () {
-            var db = firebase.firestore();
-            db.settings({
-                timestampsInSnapshots: true
-            });
-            var first = db.collection("plugins");
-
-            first.where("creator", "==", this.state.query).get()
-                .then((querySnapshot) => {
-                    var newPlugins = [];
-
-                    querySnapshot.forEach((doc) => {
+            var db = firebase.database();
+            var ref = db.ref("plugins");
+            ref.once('value').then((snapshot) => {
+                var newPlugins = [];
+                snapshot.forEach((childSnapshot) => {
+                    if (this.state.query.toLowerCase() === childSnapshot.val()["nom"].toLowerCase()) {
+                        console.log("====== ",childSnapshot);
+                        var inspiredby = childSnapshot.child("inspiredby").val();
+                        var nom = childSnapshot.child("nom").val();
+                        var image = childSnapshot.child("image").val();
                         newPlugins.push({
-                            "id": doc.id,
-                            "name": doc.data().creator,
-                            "description": doc.data().description,
-                            "img": doc.data().url,
-                        });
-                    });
-                    this.setState({
-                        pluginList: newPlugins
-                    });
-                    console.log("=======>  "+this.state.query);
-                    /*console.log("=====+>" + querySnapshot.docs.length + " ");*/
-                })
-                .catch((error) => {
-                    console.log("Error : ", error);
-            })
+                            "id": childSnapshot,
+                            "name": nom,
+                            "img": image,
+                            "inspiredby": inspiredby
+                        })
+                    }
+                });
+                this.setState({
+                    pluginList: newPlugins
+                });
+                console.log("@@@@@ ", this.state.pluginList)
+            });
         }
     );
 
@@ -85,57 +81,27 @@ class PluginShop extends Component {
     }
 
     fetchPlugin() {
-        var db = firebase.firestore();
-        db.settings({
-            timestampsInSnapshots: true
-        });
+        var db = firebase.database();
+        db.ref("plugins").once('value').then((snapshot) => {
+            let newPlugins = [];
 
-        var first = db.collection("plugins").limit(2);
+            snapshot.forEach((childSnapshot) => {
+                console.log("---->: ", childSnapshot);
+                var inspiredby = childSnapshot.child("inspiredby").val();
+                var nom = childSnapshot.child("nom").val();
+                var image = childSnapshot.child("image").val();
+                newPlugins.push({
+                    "id" : childSnapshot,
+                    "name" : nom,
+                    "description" : inspiredby,
+                    "img" : image,
+                });
+            });
+            this.setState({
+                pluginList: newPlugins
+            });
+        })
 
-        if (this.state.morePluginy) {
-            var next = db.collection("plugins").startAfter(this.state.lastVisible).limit(2);
-            console.log(this.state.pluginList.length ,"--- GETTING DATA ---", this.state.nbPluginDisplay);
-            next.get().then((querySnapshot) => {
-                let newPlugins = [];
-                console.log("[next]:", this.state.lastVisible);
-                querySnapshot.forEach((doc) => {
-                    newPlugins.push({
-                        "id" : doc.id,
-                        "name" : doc.data().creator,
-                        "description" : doc.data().description,
-                        "img" : doc.data().url,
-                    });
-                });
-                this.setState({
-                    pluginList: this.state.pluginList.push(newPlugins),
-                    lastVisible: querySnapshot.docs[querySnapshot.docs.length - 1],
-                    nbPluginDisplay: 10,
-                    morePlugin: false
-                });
-                /*console.log("=====+>"+querySnapshot.docs.length+" ");*/
-            })
-        } else {
-            first.get().then((querySnapshot) => {
-                var newPlugins = [];
-                // Get the last visible document
-                var lastVisible = querySnapshot.docs[querySnapshot.docs.length - 1];
-                console.log("[last]:", lastVisible);
-
-                querySnapshot.forEach((doc) => {
-                    newPlugins.push({
-                        "id" : doc.id,
-                        "name" : doc.data().creator,
-                        "description" : doc.data().description,
-                        "img" : doc.data().url,
-                    });
-                });
-                this.setState({
-                    pluginList: newPlugins,
-                    lastVisible: lastVisible
-                });
-                /*console.log("=====+>"+querySnapshot.docs.length+" ");*/
-            })
-        }
     }
 
     componentDidMount() {
@@ -145,9 +111,10 @@ class PluginShop extends Component {
     render() {
 
         let listPlugin = this.state.pluginList.map((el, index) => {
-            return <PluginAudio
+            return <PluginAudio2
                 id={el.id}
                 name={el.name}
+                img={el.img}
                 description={el.description}
                 key={index}
                 showDetailPlugin={this.onClickShowDetailPlugin.bind(this)}
