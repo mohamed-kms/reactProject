@@ -120,6 +120,12 @@ class AddPlugin extends Component {
             description: this.state.description,
             configs: this.state.configs
         };
+
+        if (this.state.configs.length < 1) {
+            return;
+        }
+
+
         /*const storage = firebase.storage();
         const pictureRef = storage.ref("plugins");*/
 
@@ -201,6 +207,7 @@ class AddPlugin extends Component {
                                         className="form-control"
                                         id="inputNameCreator"
                                         placeholder="Nom du createur"
+                                        required
                                         value={this.state.nom}
                                         onChange={(event) => this.handleNameCreatorInput(event)}
                                     />
@@ -212,6 +219,7 @@ class AddPlugin extends Component {
                                         className="form-control"
                                         id="inputURL"
                                         placeholder="Site web"
+                                        required
                                         value={this.state.url}
                                         onChange={(event) => this.handleURLInput(event)}
                                     />
@@ -224,6 +232,7 @@ class AddPlugin extends Component {
                                     className="form-control"
                                     id="inputTags"
                                     placeholder="Liste de TAG"
+                                    required
                                     value={this.state.tag}
                                     onChange={(event) => this.handleTagsInput(event)}
                                 />
@@ -234,6 +243,7 @@ class AddPlugin extends Component {
                                     className="form-control"
                                     id="textareaDescription"
                                     rows="3"
+                                    required
                                     value={this.state.description}
                                     onChange={(event) => this.handleResumeInput(event)}
                                 />
