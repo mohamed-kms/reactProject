@@ -60,6 +60,7 @@ class HomeStore extends Component {
 
     onClickShowDetailPlugin(idPlugin) {
         console.log("[ID] " + idPlugin);
+        debugger;
         this.setState({
             fireRedirect: true,
             id_: idPlugin
@@ -134,8 +135,7 @@ class HomeStore extends Component {
     render() {
 
         let listPlugin = this.state.pluginList.map((el, index) => {
-            console.log(el.img , " ", el.image)
-            debugger;
+            console.log("-----> "+el.id);
             return <PluginAudio
                 id={el.id}
                 name={el.name}
@@ -146,12 +146,12 @@ class HomeStore extends Component {
             />
         });
 
-        if (this.state.fireRedirect) {
+        /*if (this.state.fireRedirect) {
             let id = this.state.id_;
             return (
                 <Redirect from='/' to={'/details:'+id} compenent={DetailsPluginAudio}/>
             )
-        }
+        }*/
 
         return (
             <div style={{backgroundColor: '#333333'}}>
