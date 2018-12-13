@@ -14,7 +14,7 @@ function PluginAudio(props) {
                         <button
                             type="button"
                             className="btn btn-outline-danger"
-                            onClick={() => { history.push("/detail?id="+props.id) }/*props.showDetailPlugin(props.id)*/}
+                            onClick={() => { history.push("/detail?id="+props.id.key) }/*props.showDetailPlugin(props.id)*/}
                         >Details</button>
                     )}
                 />
