@@ -10,6 +10,7 @@ class PluginShop extends Component {
         super(props);
 
         this.state = {
+            referenceToOldestKey: '',
             lastVisible: {},
             simplePlugin: {
                 nom: null,
@@ -35,6 +36,7 @@ class PluginShop extends Component {
         this.setState({
             morePlugin: true
         });
+        this.fetchPlugin();
         console.log(this.state.pluginList.length ,"--- GETTING DATA ---", this.state.morePlugin);
     }
 
@@ -81,26 +83,81 @@ class PluginShop extends Component {
     }
 
     fetchPlugin() {
+        console.log(">)))°>",this.state.referenceToOldestKey);
         var db = firebase.database();
-        db.ref("plugins").once('value').then((snapshot) => {
-            let newPlugins = [];
 
-            snapshot.forEach((childSnapshot) => {
-                console.log("---->: ", childSnapshot);
-                var inspiredby = childSnapshot.child("inspiredby").val();
-                var nom = childSnapshot.child("nom").val();
-                var image = childSnapshot.child("image").val();
-                newPlugins.push({
-                    "id" : childSnapshot,
-                    "name" : nom,
-                    "description" : inspiredby,
-                    "img" : image,
-                });
-            });
-            this.setState({
-                pluginList: newPlugins
-            });
-        })
+        if (!this.state.referenceToOldestKey) {
+            // if initial fetch
+            db.ref("plugins")
+                .orderByKey()
+                .limitToLast(2)
+                .once('value')
+                .then((snapshot) => {
+                    let newPlugins = [];
+
+                    let arrayOfKeys = Object.keys(snapshot.val()).sort().reverse();
+                    let results = arrayOfKeys.map((key) => snapshot.val()[key]);
+
+                    this.setState({
+                        referenceToOldestKey: arrayOfKeys[arrayOfKeys.length-1]
+                    })
+
+                    console.log("----))))))---->",this.state.referenceToOldestKey);
+
+                    snapshot.forEach((childSnapshot) => {
+                        console.log("---->: ", childSnapshot);
+                        var inspiredby = childSnapshot.child("inspiredby").val();
+                        var nom = childSnapshot.child("nom").val();
+                        var image = childSnapshot.child("image").val();
+                        newPlugins.push({
+                            "id" : childSnapshot,
+                            "name" : nom,
+                            "description" : inspiredby,
+                            "img" : image,
+                        });
+                    });
+                    this.setState({
+                        pluginList: newPlugins
+                    });
+                })
+        } else {
+            console.log(">)))°>----",this.state.referenceToOldestKey);
+            db.ref("plugins")
+                .orderByKey()
+                .endAt(this.state.referenceToOldestKey)
+                .limitToLast(2)
+                .once('value')
+                .then((snapshot) => {
+                    let newPlugins = [];
+
+                    let arrayOfKeys = Object.keys(snapshot.val()).sort().reverse().slice(1);
+                    let results = arrayOfKeys.map((key) => snapshot.val()[key]);
+
+                    this.setState({
+                        referenceToOldestKey: arrayOfKeys[arrayOfKeys.length-1]
+                    })
+
+                    console.log("------------>",this.state.referenceToOldestKey);
+
+                    snapshot.forEach((childSnapshot) => {
+                        console.log("---->: ", childSnapshot);
+                        var inspiredby = childSnapshot.child("inspiredby").val();
+                        var nom = childSnapshot.child("nom").val();
+                        var image = childSnapshot.child("image").val();
+                        newPlugins.push({
+                            "id" : childSnapshot,
+                            "name" : nom,
+                            "description" : inspiredby,
+                            "img" : image,
+                        });
+                    });
+                    this.setState({
+                        pluginList: newPlugins
+                    });
+                })
+        }
+
+
 
     }
 

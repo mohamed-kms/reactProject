@@ -25,7 +25,10 @@ class Login extends Component {
             username: this.state.account.username,
             password: this.state.account.password
         };
+
         debugger;
+
+
         firebase.auth().signInWithEmailAndPassword(form.username, form.password)
             .then((user) => {
                 // TODO redirection
