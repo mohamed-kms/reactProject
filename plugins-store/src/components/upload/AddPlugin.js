@@ -136,13 +136,12 @@ class AddPlugin extends Component {
 
         pictureRef.put(file).then((snapshot) => {
             snapshot.ref.getDownloadURL().then((url) => {
-                console.log("aaaaaaaaaaaaaaaaa: ", url);
                 let form = {
                     username: firebase.auth().currentUser.email.split('@')[0],
                     nom: this.state.nom,
                     tags: tagList,
                     image: url,
-                    inspiredby: "",
+                    inspiredby: this.state.description.substring(0, Math.floor(Math.random() * 20) + 10) + "...",
                     description: this.state.description,
                     configs: this.state.configs,
                     url: this.state.url
@@ -152,22 +151,11 @@ class AddPlugin extends Component {
                         console.log("BAD");
                     } else {
                         console.log("GOOOD");
+                        this.props.history.push('/plugin-show');
                     }
                 })
             });
         });
-
-
-        /*child(this.state.nom)*ref.push().set(form, (error) => {
-            if (error) {
-                console.log("BAD");
-            } else {
-                pictureRef.put(file).then((snapshot) => {
-                    console.log('Uploaded a blob or file!', pictureRef.getDownloadURL());
-                });
-                console.log("GOOOD");
-            }
-        });*/
     };
 
     addConfig = (event)=> {
@@ -231,12 +219,12 @@ class AddPlugin extends Component {
                         <form onSubmit={this.formulairePostPlugin.bind(this)}>
                             <div className="form-row">
                                 <div className="form-group col-md-6">
-                                    <label htmlFor="inputNameCreator">Nom du createur</label>
+                                    <label htmlFor="inputNameCreator">Nom du plugin</label>
                                     <input
                                         type="text"
                                         className="form-control"
                                         id="inputNameCreator"
-                                        placeholder="Nom du createur"
+                                        placeholder="Nom du plugin"
                                         required
                                         value={this.state.nom}
                                         onChange={(event) => this.handleNameCreatorInput(event)}
@@ -308,7 +296,7 @@ class AddPlugin extends Component {
                                                 type="text"
                                                 className="form-control"
                                                 id="inputControl"
-                                                placeholder="Liste de TAG"
+                                                placeholder="Nom du controleur"
                                                 value={this.state.controlName}
                                                 onChange={(event) => this.handleControl(event)}
                                             />

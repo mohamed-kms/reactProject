@@ -35,6 +35,7 @@ class Register extends Component {
             .then(function (user) {
                 //console.log("[USER] "+JSON.stringify(user, null, 2));
                 console.log("[ REDIRECTION 1 = ]"+user);
+                this.props.history.push('/add');
                 // this.props.history.push('/');
             })
             .catch(function (error) {
