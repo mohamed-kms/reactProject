@@ -90,7 +90,7 @@ class PluginShop extends Component {
             // if initial fetch
             db.ref("plugins")
                 .orderByKey()
-                .limitToLast(2)
+                .limitToLast(6)
                 .once('value')
                 .then((snapshot) => {
                     let newPlugins = [];
@@ -125,7 +125,7 @@ class PluginShop extends Component {
             db.ref("plugins")
                 .orderByKey()
                 .endAt(this.state.referenceToOldestKey)
-                .limitToLast(2)
+                .limitToLast(6)
                 .once('value')
                 .then((snapshot) => {
                     let newPlugins = [];
