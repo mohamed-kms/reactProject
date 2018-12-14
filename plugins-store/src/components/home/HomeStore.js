@@ -31,7 +31,7 @@ class HomeStore extends Component {
 
     getPlugins() {
         var db = firebase.database();
-        db.ref("plugins").once('value').then((snapshot) => {
+        db.ref("plugins").orderByKey().limitToLast(6).once('value').then((snapshot) => {
             let newPlugins = [];
 
             snapshot.forEach((childSnapshot) => {
